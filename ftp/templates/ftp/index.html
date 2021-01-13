@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <title>Title</title>
+</head>
+
+<body>
+    {% if current %}
+    <h1>
+        {{ current }}
+    </h1>
+    <br>
+    {% if parent %}
+    <a href="{{ parent }}">../</a>
+    {% endif %}
+    {% if path %}
+    {% for p in path %}
+    <a href="{{p.name}}">{{ p.name }}</a>
+    </br>
+    {% endfor %}
+    {% endif %}
+    <p>-----</p>
+    {% if file %}
+    {% for f in file %}
+    {% if f.canRead %}
+    <a href="{{ f.url }}">{{ f.name }}</a></br>
+    {% else %}
+    {{ f.name }}</br>
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    file not exist
+    {% endif %}
+    {% endif %}
+</body>
+
+</html>

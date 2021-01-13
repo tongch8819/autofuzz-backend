@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>AutoFuzz</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/dashboard/">
+
+  <!-- Bootstrap core CSS -->
+  {% load static %}
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="import" href="dashboard.html" id="page1" />
+
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+
+
+  <!-- Ajax refresh block  -->
+  <script>
+    function loadXMLDoc(ele_id, request_str) {
+      // request_str: panel, stop
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      }
+      else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          document.getElementById(ele_id).innerHTML = xmlhttp.responseText;
+        }
+      }
+      xmlhttp.open("GET", "/autofuzz/" + request_str, true);
+      xmlhttp.send();
+    }
+
+  </script>
+
+  <style>
+    .ave {
+      margin: auto;
+    }
+
+    span {
+      height: 100px;
+      width: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">AutoFuzz</a>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" href="help">帮助</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/index">
+                <span data-feather="home"></span>
+                主页<span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/uploadCompress">
+                <span data-feather="file-plus"></span>
+                压缩包上传
+              </a>
+            </li>
+            <a class="nav-link" href="/autofuzz/uploadGitURL">
+              <span data-feather="file-plus"></span>
+              Git URL上传
+            </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/uploadInputSeeds">
+                <span data-feather="file"></span>
+                测试用例上传
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/compile">
+                <span data-feather="settings"></span>
+                插桩编译
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/runtime">
+                <span data-feather="settings"></span>
+                模糊测试运行
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/autofuzz/status">
+                <span data-feather="settings"></span>
+                状态监控
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/report">
+                <span data-feather="settings"></span>
+                生成分析报告
+              </a>
+            </li>
+          </ul>
+
+
+        </div>
+      </nav>
+
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <!-- process status  -->
+        <div class="ave">
+          <h1>任务状态</h1>
+        </div>
+        <div class="ave">
+          {% if run == 'running' %}
+          <span id="status_description" class="label label-success">任务运行中...</span>
+          {% else %}
+          <span id="status_description" class="label label-warning">调试阶段</span>
+          {% endif %}
+        </div>
+
+
+
+        <div class="ave">
+          <h1>实时状态监控</h1>
+        </div>
+        <div id="status" class="ave">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>属性</th>
+                <th>值</th>
+                <th>属性说明</th>
+                <th>更新时间</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>开始时间</td>
+                <td>{{ asc_start_time }}</td>
+                <td>模糊测试任务启动的时刻</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>上次更新时间</td>
+                <td>{{ asc_last_update }}</td>
+                <td>模糊测试上次更新种子的时刻</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>循环轮次</td>
+                <td>{{ cycles_done }}</td>
+                <td>循环执行程序的次数</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>总执行次数</td>
+                <td>{{ execs_done }}</td>
+                <td>执行程序的总次数</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>每秒执行次数</td>
+                <td>{{ execs_per_sec }}</td>
+                <td>反应模糊测试进程的执行效率</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>总路径数</td>
+                <td>{{ paths_total }}</td>
+                <td>模糊测试执行过程中覆盖到的总路径条数</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr class="warning">
+                <td>7</td>
+                <td>崩溃数</td>
+                <td>{{ unique_crashes }}</td>
+                <td>触发不同崩溃的次数</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>挂起次数</td>
+                <td>{{ unique_hangs }}</td>
+                <td>程序运行过程中出现异常而挂起的次数</td>
+                <td>{{ panel_update_time }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ave">
+          <button type="button" class="btn btn-lg btn-primary" onclick="loadXMLDoc('status', 'panel')">刷新状态</button>
+          <button type="button" class="btn btn-lg btn-danger"
+            onclick="loadXMLDoc('status_description', 'stop')">停止运行</button>
+        </div>
+
+
+
+
+        <div class="ave">
+          <h1>分析报告</h1>
+        </div>
+        <!-- generate report.txt button  -->
+        <div id="download" style="margin-left: 300px;">
+          <a href="/autofuzz/download" download="report.txt">点击下载</a>
+          <button type="button" class="btn btn-lg btn-primary"
+            onclick="window.location.href='/upload/download'">点击下载</button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+
+</html>

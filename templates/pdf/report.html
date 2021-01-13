@@ -1,0 +1,241 @@
+{% load static %}
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>AutoFuzz Fuzzing Report</title>
+  <meta name="description" content="MobSF Report">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="{% static 'css/pdf/pdf_report.css' %}">
+  <link rel="stylesheet" href="{% static 'css/pdf/all.min.css' %}">
+</head>
+
+
+
+
+<body bgcolor="FFFFFF">
+
+  <article id="cover">
+    <div class="header">
+      <img src="{% static  'img/autofuzz_logo.jpg' %}" class="center logo" alt="AutoFuzz Logo" />
+      <div class="htext">AutoFuzz Fuzzing Report </div>
+    </div>
+    </br></br></br>
+    <div class="app">
+      <img class="center" id="icon" src="{% static 'img/iscas_logo.jpg' %}" alt="app_icon" />
+    </div>
+    <!-- <div class="center"> -->
+    <!-- <h1><i class="fab fa-apple"></i> {{ app_name }} {% if app_version %} ({{app_version}}) {% endif %}</h1> -->
+    <!-- </div> -->
+    </br></br></br></br></br>
+
+    <div class="container">
+      <table class="basic no_border">
+        <tr class="no_border">
+          <td class="no_border">
+            <h3>File Name:</h3>
+          </td>
+          <td class="no_border">
+            <h3>{{file_name}}</h3>
+          </td>
+        </tr>
+        <tr>
+          <td class="no_border">
+            <h3>Publisher:</h3>
+          </td>
+          <td class="no_border">
+            <h3>{{ publisher_name }}</h3>
+          </td>
+        </tr>
+        <tr>
+          <td class="no_border">
+            <h3>Scan Date:</h3>
+          </td>
+          <td class="no_border">
+            <h3>{{ timestamp }}</h3>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <br><br><br><br><br><br><br><br>
+  </article>
+
+  <article id='contents'>
+    <h2><i class="fas fa-box-open"></i> PROJECT INFORMATION</h2>
+
+    <h5>File Name:</h5> {{ file_name }}</br>
+    <h5>Size: </h5> {{ size }}</br>
+    <h5>MD5:</h5> {{ md5 }}</br>
+    <h5>SHA1:</h5> {{ sha1 }}</br>
+    <h5>SHA256:</h5> {{ sha256 }}</br>
+
+
+
+
+    <h2><i class="fas fa-flag"></i> RUNTIME INFORMATION</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Attribute</th>
+          <th>Value</th>
+          <th>Description</th>
+          <th>Update Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Start Time</td>
+          <td>{{ asc_start_time }}</td>
+          <td>The time when the fuzzer process started.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Last Update Time</td>
+          <td>{{ asc_last_update }}</td>
+          <td>The recent time when the fuzzer updated itself.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Cycles Done</td>
+          <td>{{ cycles_done }}</td>
+          <td>Count of loop until now.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Total Execution Frequency</td>
+          <td>{{ execs_done }}</td>
+          <td>The number of target program execution.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Executions Per Second</td>
+          <td>{{ execs_per_sec }}</td>
+          <td>This attribute indicates the speed and efficiency of fuzzing process.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Total Path Number</td>
+          <td>{{ paths_total }}</td>
+          <td>The number of explored paths within the target program.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr class="danger">
+          <td>7</td>
+          <td>Unique Crash Number</td>
+          <td>{{ unique_crashes }}</td>
+          <td>The number of unique crashes triggered during fuzzing process.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Hangup Number</td>
+          <td>{{ unique_hangs }}</td>
+          <td>The number of hangup occassion during fuzzing process.</td>
+          <td>{{ panel_update_time }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+    <h2><i class="fas fa-spider"></i> CRASH INFORMATION</h2>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Signal</th>
+          <th>Source</th>
+          <th>Operation</th>
+          <th>Position</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in crash_item_list %}
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.sig }}</td>
+          <td>{{ item.src }}</td>
+          <td>{{ item.op }}</td>
+          <td>{{ item.pos }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2><i class="fas fa-search"></i> CRASH ANALYSIS</h2>
+    <table class="table table-hover">
+      <thead>
+        <th>#</th>
+        <th>ISSUE</th>
+        <th>SEVERITY</th>
+        <th>DESCRIPTION</th>
+      </thead>
+      <tbody>
+        {% for item in crash_analysis_list %}
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.issue }}</td>
+          <td>{{ item.severity }}</td>
+          <td>{{ item.description }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </article>
+
+  <!-- end -->
+  <article id="columns">
+    </br>
+    <hr>
+    <h3>Report Generated by - AutoFuzz {{ version }} </h3>
+    <section>
+      <p>
+        Automated Fuzzing Framework (AutoFuzz) is an automated, all-in-one web application for fuzzing open-source
+        softwares.
+      </p>
+      <p>
+        <strong>© {% now "Y" %} Automated Fuzzing Framework - AutoFuzz
+          <!-- | <a href="https://v.com">Ajin Abraham</a> | <a href="https://opensecurity.in">OpenSecurity</a>.</strong> -->
+      </p>
+    </section>
+  </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+</html>

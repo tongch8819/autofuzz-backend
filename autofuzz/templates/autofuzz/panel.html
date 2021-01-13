@@ -1,0 +1,71 @@
+<!-- <div class="col-md-6"> -->
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>属性</th>
+            <th>值</th>
+            <th>属性说明</th>
+            <th>更新时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>开始时间</td>
+            <td>{{ asc_start_time }}</td>
+            <td>模糊测试任务启动的时刻</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>上次更新时间</td>
+            <td>{{ asc_last_update }}</td>
+            <td>模糊测试上次更新种子的时刻</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>循环轮次</td>
+            <td>{{ cycles_done }}</td>
+            <td>循环执行程序的次数</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>总执行次数</td>
+            <td>{{ execs_done }}</td>
+            <td>执行程序的总次数</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>每秒执行次数</td>
+            <td>{{ execs_per_sec }}</td>
+            <td>反映模糊测试进程的执行效率</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>总路径数</td>
+            <td>{{ paths_total }}</td>
+            <td>模糊测试执行过程中覆盖到的总路径条数</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr class="danger">
+            <td>7</td>
+            <td>崩溃数</td>
+            <td>{{ unique_crashes }}</td>
+            <td>触发不同崩溃的次数</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>挂起次数</td>
+            <td>{{ unique_hangs }}</td>
+            <td>程序运行过程中出现异常而挂起的次数</td>
+            <td>{{ panel_update_time }}</td>
+          </tr>
+        </tbody>
+      </table>
+    <!-- </div> -->

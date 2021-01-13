@@ -1,0 +1,3 @@
+# environment variables:
+# command line:
+'/home/chengtong/auto-fuzz/fuzzing_platform/asset/kernel/AFLplusplus/afl-fuzz' '-i' '/home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/input' '-o' '/home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/output' '--' '/home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/bin/demo' '&'

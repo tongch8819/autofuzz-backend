@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.5">
+  <title>AutoFuzz</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/dashboard/">
+
+  <!-- Bootstrap core CSS -->
+  {% load static %}
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link rel="import" href="dashboard.html" id="page1" />
+
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+
+
+  <!-- Ajax refresh block  -->
+  <script>
+    function loadXMLDoc(ele_id, request_str) {
+      // request_str: panel, stop
+      var xmlhttp;
+      if (window.XMLHttpRequest) {
+        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp = new XMLHttpRequest();
+      }
+      else {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          document.getElementById(ele_id).innerHTML = xmlhttp.responseText;
+        }
+      }
+      xmlhttp.open("GET", "/autofuzz/" + request_str, true);
+      xmlhttp.send();
+    }
+
+  </script>
+
+  <style>
+    .ave {
+      margin: auto;
+    }
+
+    span {
+      height: 100px;
+      width: 100px;
+    }
+  </style>
+
+
+  <!-- Load echarts.js -->
+  <script src="{% static 'js/echarts.js' %}"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">AutoFuzz</a>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" href="help">帮助</a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/index">
+                <span data-feather="home"></span>
+                主页<span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/uploadCompress">
+                <span data-feather="file-plus"></span>
+                压缩包上传
+              </a>
+            </li>
+            <a class="nav-link" href="/autofuzz/uploadGitURL">
+              <span data-feather="file-plus"></span>
+              Git URL上传
+            </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/uploadInputSeeds">
+                <span data-feather="file"></span>
+                测试用例上传
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/compile">
+                <span data-feather="settings"></span>
+                插桩编译
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/runtime">
+                <span data-feather="settings"></span>
+                模糊测试运行
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/autofuzz/status">
+                <span data-feather="settings"></span>
+                状态监控
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/autofuzz/report">
+                <span data-feather="settings"></span>
+                生成分析报告
+              </a>
+            </li>
+          </ul>
+
+
+        </div>
+      </nav>
+
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+
+
+        <div class="card" style="width: 40rem;">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+              content.</p>
+            <a href="#" class="card-link">Card link</a>
+            <a href="#" class="card-link">Another link</a>
+          </div>
+        </div>
+
+
+        <!-- echarts DOM element: bar plot -->
+        <div id="barplot" style="width: 600px;height:400px;padding-top: 50px;"></div>
+        <script type="text/javascript" src="{% static 'js/echart/barplot-demo.js' %}"></script>
+
+
+        <!-- pie plot -->
+        <div id="pieplot" style="width: 600px;height:400px;padding-top: 50px;"></div>
+        <script type="text/javascript" src="{% static 'js/echart/pieplot-demo.js' %}"></script>
+
+
+        <!-- disk usage -->
+        <div>
+          <h2>Disk Usage</h2>
+          <div id="disk-usage" style="width: 600px;height:400px;padding-top: 50px;"></div>
+          <script type="text/javascript" src="{% static 'js/echart/disk-usage.js' %}"></script>
+          <div id="total-disk-usage"></div>
+        </div>
+
+
+        <!-- interactive plot -->
+        <div id="interactivePlot" style="width: 1000px; height: 800px; padding-top: 50px;"></div>
+        <script>
+          setTimeout(function () {
+            option = {
+              legend: {},
+              tooltip: {
+                trigger: 'axis',
+                showContent: false
+              },
+              dataset: {
+                source: [
+                  ['product', '2012', '2013', '2014', '2015', '2016', '2017'],
+                  ['Matcha Latte', 41.1, 30.4, 65.1, 53.3, 83.8, 98.7],
+                  ['Milk Tea', 86.5, 92.1, 85.7, 83.1, 73.4, 55.1],
+                  ['Cheese Cocoa', 24.1, 67.2, 79.5, 86.4, 65.2, 82.5],
+                  ['Walnut Brownie', 55.2, 67.1, 69.2, 72.4, 53.9, 39.1]
+                ]
+              },
+              xAxis: { type: 'category' },
+              yAxis: { gridIndex: 0 },
+              grid: { top: '55%' },
+              series: [
+                { type: 'line', smooth: true, seriesLayoutBy: 'row' },
+                { type: 'line', smooth: true, seriesLayoutBy: 'row' },
+                { type: 'line', smooth: true, seriesLayoutBy: 'row' },
+                { type: 'line', smooth: true, seriesLayoutBy: 'row' },
+                {
+                  type: 'pie',
+                  id: 'pie',
+                  radius: '30%',
+                  center: ['50%', '25%'],
+                  label: {
+                    formatter: '{b}: {@2012} ({d}%)'
+                  },
+                  encode: {
+                    itemName: 'product',
+                    value: '2012',
+                    tooltip: '2012'
+                  }
+                }
+              ]
+            };
+            var interactivePlot = echarts.init(document.getElementById('interactivePlot'), 'dark')
+            interactivePlot.on('updateAxisPointer', function (event) {
+              var xAxisInfo = event.axesInfo[0];
+              if (xAxisInfo) {
+                var dimension = xAxisInfo.value + 1;
+                interactivePlot.setOption({
+                  series: {
+                    id: 'pie',
+                    label: {
+                      formatter: '{b}: {@[' + dimension + ']} ({d}%)'
+                    },
+                    encode: {
+                      value: dimension,
+                      tooltip: dimension
+                    }
+                  }
+                });
+              }
+            });
+
+            interactivePlot.setOption(option);
+
+          });
+
+        </script>
+
+        <!-- bar plot with color encoded -->
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="barplot-color" style="width: 600px;height:400px;"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('barplot-color'));
+
+          var option = {
+            dataset: {
+              source: [
+                ['score', 'amount', 'product'],
+                [89.3, 58212, 'Matcha Latte'],
+                [57.1, 78254, 'Milk Tea'],
+                [74.4, 41032, 'Cheese Cocoa'],
+                [50.1, 12755, 'Cheese Brownie'],
+                [89.7, 20145, 'Matcha Cocoa'],
+                [68.1, 79146, 'Tea'],
+                [19.6, 91852, 'Orange Juice'],
+                [10.6, 101852, 'Lemon Juice'],
+                [32.7, 20112, 'Walnut Brownie']
+              ]
+            },
+            grid: { containLabel: true },
+            xAxis: { name: 'amount' },
+            yAxis: { type: 'category' },
+            visualMap: {
+              orient: 'horizontal',
+              left: 'center',
+              min: 10,
+              max: 100,
+              text: ['High Score', 'Low Score'],
+              // Map the score column to color
+              dimension: 0,
+              inRange: {
+                color: ['#D7DA8B', '#E15457']
+              }
+            },
+            series: [
+              {
+                type: 'bar',
+                encode: {
+                  // Map the "amount" column to X axis.
+                  x: 'amount',
+                  // Map the "product" column to Y axis
+                  y: 'product'
+                }
+              }
+            ]
+          };
+          myChart.setOption(option);
+        </script>
+
+
+        <!-- sunburst plot -->
+        <div id="sunburst" style="width: 600px;height:400px;"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('sunburst'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            series: {
+              type: 'sunburst',
+              data: [{
+                name: 'A',
+                value: 10,
+                children: [{
+                  value: 3,
+                  name: 'Aa'
+                }, {
+                  value: 5,
+                  name: 'Ab'
+                }]
+              }, {
+                name: 'B',
+                children: [{
+                  name: 'Ba',
+                  value: 4
+                }, {
+                  name: 'Bb',
+                  value: 2
+                }]
+              }, {
+                name: 'C',
+                value: 3
+              }]
+            }
+          };
+
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>
+      </main>
+    </div>
+  </div>
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+
+</html>
