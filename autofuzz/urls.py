@@ -40,4 +40,13 @@ urlpatterns = [
     url('api/memory', viewsAPI.memoryUsage, name="memoryUsage"),
     url('api/cpu', viewsAPI.cpuUsage, name="cpuUsage"),
     url('api/disk', viewsAPI.diskUsage, name="diskUsage"),
+
+    # -------
+    # new api
+    url('api/create/project', viewsAPI.create_project, name='create_project'),
+    url('api/upload/program', viewsAPI.upload_program, name='upload_program'),
+    url('api/upload/inputseed', viewsAPI.upload_inputseed, name='upload_inputseed'),
+    url('api/compile', viewsAPI.compile, name='compile'),
+    url('api/run', viewsAPI.run, name='run'),
+    url('api/status', viewsAPI.status, name='status'),
 ]

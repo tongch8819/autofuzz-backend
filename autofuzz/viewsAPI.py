@@ -40,3 +40,45 @@ def diskUsage(request):
         },
         ]
     })
+
+# to do
+def create_project(request):
+    ctx = {
+        'pid' : 100,
+        'info': 'something',
+        'name': 'something',
+    }
+    return JsonResponse(ctx)
+
+def upload_program(request):
+    # request.POST.
+    ctx = {
+        'fid': 10005,
+        'status': 'OK',
+    }
+    return JsonResponse(ctx)
+
+def upload_inputseed(request):
+    ctx = {
+        'fid': 20005,
+        'status': 'OK',
+    }
+    return JsonResponse(ctx)
+
+def compile(request):
+    ctx = {
+        'fid': 30005,
+        'status': 'OK',
+    }
+    return JsonResponse(ctx)
+
+def run(request):
+    ctx = {
+        'status': 'OK'
+    }
+    return JsonResponse(ctx)
+
+from . import views
+def status(request):
+    ctx = views.buildFuzzerStatCtx()
+    return JsonResponse(ctx)
