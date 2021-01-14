@@ -1,12 +1,20 @@
 import os, argparse
+import sys
+
+sys.path.append("../../fuzzing_platform")
+import settings
+
+def get_base_dir():
+    # works just fine
+    return os.fspath(settings.BASE_DIR) + '/asset'
 
 # utility function
 def get_trgt_dir(project_id):
-    base_dir = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+    base_dir = get_base_dir()
     return base_dir + '/pool/' + str(project_id)
 
 def get_shell_path(shell_name):
-    base_dir = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+    base_dir = get_base_dir()
     return base_dir + '/script/shell/' + shell_name
 
 
@@ -39,14 +47,14 @@ def rm_project(project_id):
 
 def compile_project(project_id, compiler_id, src_name='target.c', bin_name='demo'):
     shell_path = get_shell_path('compile.sh')
-    tplt = "bash {0} {1} {2} {3} {4}"
-    cmd = tplt.format(shell_path, project_id, src_name, bin_name, compiler_id)
+    tplt = "bash {0} {1} {2} {3} {4} {5}"
+    cmd = tplt.format(shell_path, project_id, src_name, bin_name, compiler_id, get_base_dir())
     os.system(cmd)
 
 def run_project(project_id, bin_name, kernel_id):
     shell_path = get_shell_path('run.sh')
-    tplt = "bash {0} {1} {2} {3}"
-    cmd = tplt.format(shell_path, project_id, bin_name, kernel_id)
+    tplt = "bash {0} {1} {2} {3} {4}"
+    cmd = tplt.format(shell_path, project_id, bin_name, kernel_id, get_base_dir())
     os.system(cmd)
 
 
@@ -66,6 +74,8 @@ def test_run():
         # run_project(1, 'demo', i)
     run_project(1, 'demo', 5)
 
+def test_base_dir():
+    print(get_base_dir())
 
 # main
 def main():
@@ -74,7 +84,7 @@ def main():
 
     test_parser = subparsers.add_parser('test')
     # test_parser.add_argument('-v', '--verbose', action="count")
-    test_parser.add_argument('subcommand', help='preprocess, compile, run')
+    test_parser.add_argument('subcommand', help='preprocess, compile, run, base_dir')
 
 
     preprocess_parser = subparsers.add_parser('preprocess')
@@ -96,13 +106,15 @@ def main():
     # print(vars(args))
 
     if args.subparser_name == 'test':
-        assert args.subcommand in ('preprocess', 'compile', 'run'), "subcommand error!!!"
+        assert args.subcommand in ('preprocess', 'compile', 'run', 'base_dir'), "subcommand error!!!"
         if args.subcommand == 'preprocess':
             test_func = test_preprocess
         elif args.subcommand == 'compile':
             test_func = test_compile
         elif args.subcommand == 'run':
             test_func = test_run
+        elif args.subcommand == 'base_dir':
+            test_func = test_base_dir
         try:
             test_func()
             print("\n\n\033[1;32m+\033[0m Test Passed;")

@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_protect
 import os, re
 import time
 from datetime import datetime, timedelta
+from django.conf import settings
 
 
 def test(request):
@@ -36,8 +37,6 @@ def my_project(request):
     return render(request, 'autofuzz/index.html')
 
 
-def settings(request):
-    return render(request, 'autofuzz/index.html')
 
 
 def dashboard(request):
@@ -88,7 +87,7 @@ def getFile(request):
         return render(request, "autofuzz/returnUploadResult.html")
 
     context = dict()
-    base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+    base_path = os.fspath(settings.BASE_DIR) + "/asset"
     if keyword == 'file_type':
         myfile = request.FILES.get('input_file')
         if value == "input_seed":
@@ -153,7 +152,6 @@ def asktime(request):
 
 
 def download(request):
-    # os.system('cp /home/chengtong/auto-fuzz/dev/target/output/fuzzer_stats /home/chengtong/auto-fuzz/dev/upload/templates/upload/report.txt')
     return render(request, "autofuzz/report.csv")
 
 
@@ -161,8 +159,8 @@ def download(request):
 
 
 def panel(request):
-    base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
-    with open(base_path + '/target/output/fuzzer_stats', 'r') as rd:
+    base_path = os.fspath(settings.BASE_DIR)
+    with open(base_path + '/asset/target/output/fuzzer_stats', 'r') as rd:
         content = rd.readlines()
 
     context = dict()
@@ -198,14 +196,14 @@ def panel(request):
         return container
 
     content = generateReport(context)
-    with open("/home/chengtong/auto-fuzz/fuzzing_platform/autofuzz/templates/autofuzz/report.csv", "w") as wrt_fd:
+    with open(base_path + "/autofuzz/templates/autofuzz/report.csv", "w") as wrt_fd:
         wrt_fd.writelines(content)
 
     return render(request, "autofuzz/panel.html", context)
 
 
 def stop(request):
-    base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+    base_path = os.fspath(settings.BASE_DIR) + "/asset"
     with open(base_path + '/target/output/fuzzer_stats', 'r') as rd:
         content = rd.readlines()
     _, pid = content[2].replace(' ', '').strip().split(':')
@@ -230,7 +228,8 @@ def stop(request):
 Report Views
 """
 def buildFuzzerStatCtx(base_dir=None):
-    base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+    base_path = os.fspath(settings.BASE_DIR) + "/asset"
+    # base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
     with open(base_path + '/pool/1/output/fuzzer_stats', 'r') as rd:
         content = rd.readlines()
     context = dict()
@@ -312,7 +311,8 @@ def report(request):
 
 def PDFReport(request):
     url = '127.0.0.1:8000/autofuzz/report'
-    output_path = '/home/chengtong/auto-fuzz/fuzzing_platform/asset/report/A.pdf'
+    # base_path = os.fspath(settings.BASE_DIR) + "/asset"
+    output_path = os.fspath(settings.BASE_DIR) + '/asset/report/A.pdf'
     cmd = 'wkhtmltopdf ' + url + ' ' + output_path
     os.system(cmd)
     with open(output_path, 'rb') as rd:
@@ -325,7 +325,7 @@ def sayHello(request):
 
 
 def downloadCrashSeed(request, project_id, crash_id: str):
-    base_dir = '/home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/' + str(project_id) + '/output/crashes'
+    base_dir = os.fspath(settings.BASE_DIR) + '/asset/pool/' + str(project_id) + '/output/crashes'
     if not os.path.isdir(base_dir):
         return render(request, 'autofuzz/404.html')
 

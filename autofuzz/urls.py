@@ -10,7 +10,6 @@ urlpatterns = [
     url(r'^help$', views.help, name='help'),
     url('create-project', views.create_project, name='create_project'),
     url('my-project', views.my_project, name='my_project'),
-    url('settings', views.settings, name='settings'),
 
     url('dashboard', views.dashboard, name='dashboard'),
     # url(r'^contact$', views.contact, name='contact'),
@@ -49,4 +48,14 @@ urlpatterns = [
     url('api/compile', viewsAPI.compile, name='compile'),
     url('api/run', viewsAPI.run, name='run'),
     url('api/status', viewsAPI.status, name='status'),
+    
+    url('api/query/project/list', viewsAPI.query_project_list, name='query_project_list'),
+    path('api/query/project/<int:project_id>/info', viewsAPI.query_project_info, name='query_project_info'),
+    path('api/query/project/<int:project_id>/file/list', viewsAPI.query_file_list, name='query_project_list'),
+
+    url('api/query/cpu/snapshot', viewsAPI.query_cpu_snapshot, name="query_cpu_snapshot"),
+    url('api/query/memory/snapshot', viewsAPI.query_memory_snapshot, name="query_memory_snapshot"),
+    url('api/query/cpu/timeseries', viewsAPI.query_cpu_timeseries, name="query_cpu_timeseries"),
+    url('api/query/memory/timeseries', viewsAPI.query_memory_timeseries, name="query_memory_timeseries"),
+    url('api/query/process/list', viewsAPI.query_process_list, name="query_process_list"),
 ]

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if test $# != 3; then
-    echo "Usage: $0 <ID> <BIN Name> <KID>"
+if test $# != 4; then
+    echo "Usage: $0 <ID> <BIN Name> <KID> <BASE_DIR>"
     cat<<EOF
 
 KID      Name
@@ -15,7 +15,12 @@ EOF
     exit 1
 fi
 
-BASE_DIR="/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+# BASE_DIR="/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+BASE_DIR=$4
+if test ! -d $BASE_DIR; then 
+    echo "Base directory error"
+    exit 2
+fi
 # kernel path
 AFL_FUZZ_BIN=$BASE_DIR"/kernel/afl/afl-fuzz"
 Memlock_heap_FUZZ_BIN=$BASE_DIR"/kernel/MemLock/tool/MemLock/memlock-heap-fuzz"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if test $# != 4; then
-    echo "Usage: $0 <ID> <SRC Name> <Output Name> <CID>"
+if test $# != 5; then
+    echo "Usage: $0 <ID> <SRC Name> <Output Name> <CID> <BASE_DIR>"
     cat<<EOF
 
 CID      Name
@@ -15,7 +15,12 @@ EOF
     exit 1
 fi
 
-BASE_DIR="/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+# BASE_DIR="/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+BASE_DIR=$5
+if test ! -d $BASE_DIR; then 
+    echo "Base directory error"
+    exit 2
+fi
 # compiler path
 AFL_CC=$BASE_DIR"/kernel/afl/afl-gcc"
 Memlock_CC=$BASE_DIR"/kernel/MemLock/tool/MemLock/afl-gcc"
