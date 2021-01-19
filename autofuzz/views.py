@@ -227,10 +227,11 @@ def stop(request):
 """
 Report Views
 """
-def buildFuzzerStatCtx(base_dir=None):
+def buildFuzzerStatCtx(project_id: int):
     base_path = os.fspath(settings.BASE_DIR) + "/asset"
     # base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
-    with open(base_path + '/pool/1/output/fuzzer_stats', 'r') as rd:
+    work_dir = base_path + '/pool/' + str(project_id) + '/output'
+    with open(work_dir + '/fuzzer_stats', 'r') as rd:
         content = rd.readlines()
     context = dict()
     for line in content:
@@ -238,7 +239,7 @@ def buildFuzzerStatCtx(base_dir=None):
         context[k] = v
 
     def _time_format(unix_time):
-        datetime_obj = datetime.fromtimestamp(unix_time) + timedelta(hours=8)
+        datetime_obj = datetime.fromtimestamp(unix_time)
         return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
 
     context['asc_start_time'] = _time_format(int(context['start_time']))
@@ -261,7 +262,7 @@ def buildFuzzerStatCtx(base_dir=None):
         11: 'SIGSEGV'
     }
 
-    for name in os.listdir(base_path + '/pool/1/output/crashes'):
+    for name in os.listdir(work_dir + '/crashes'):
         if name == 'README.txt':
             continue
         tmp = dict()
@@ -275,7 +276,7 @@ def buildFuzzerStatCtx(base_dir=None):
         context['crash_item_list'].append(tmp)
     return context
 
-def report(request):
+def report(request, project_id):
     # options = {
         # 'page-size': 'Letter',
         # 'quiet': '',
@@ -305,14 +306,14 @@ def report(request):
         'sha256': 'f12a5eddc1caf40453b2b2d1d403a9a928c12fa8bd45bf26489c2cad2c172dbc',
     }
 
-    context.update(buildFuzzerStatCtx())
+    context.update(buildFuzzerStatCtx(project_id))
     return HttpResponse(template.render(context))
 
 
-def PDFReport(request):
-    url = '127.0.0.1:8000/autofuzz/report'
+def PDFReport(request, project_id):
+    url = '127.0.0.1:8002/autofuzz/report/' + str(project_id)
     # base_path = os.fspath(settings.BASE_DIR) + "/asset"
-    output_path = os.fspath(settings.BASE_DIR) + '/asset/report/A.pdf'
+    output_path = os.fspath(settings.BASE_DIR) + '/asset/report/tmp.pdf'
     cmd = 'wkhtmltopdf ' + url + ' ' + output_path
     os.system(cmd)
     with open(output_path, 'rb') as rd:

@@ -27,8 +27,9 @@ urlpatterns = [
     url(r'^panel/$', views.panel, name='panel'),
     url(r'^stop/$', views.stop, name='stop'),
 
-    url(r'^report/$', views.report, name='report'),
-    url('PDFReport', views.PDFReport, name='PDFReport'),
+    # url(r'^report/$', views.report, name='report'),
+    path('report/<int:project_id>', views.report, name='report'),
+    path('PDFReport/<int:project_id>', views.PDFReport, name='PDFReport'),
 
     url('hello', views.sayHello, name="sayHello"),
 
@@ -50,7 +51,7 @@ urlpatterns = [
     url('api/status', viewsAPI.status, name='status'),
     
     url('api/query/project/list', viewsAPI.query_project_list, name='query_project_list'),
-    path('api/query/project/<int:project_id>/info', viewsAPI.query_project_info, name='query_project_info'),
+    path('api/query/single/project/<int:project_id>/info', viewsAPI.query_single_project_info, name='query_single_project_info'),
     path('api/query/project/<int:project_id>/file/list', viewsAPI.query_file_list, name='query_project_list'),
 
     url('api/query/cpu/snapshot', viewsAPI.query_cpu_snapshot, name="query_cpu_snapshot"),
@@ -58,4 +59,12 @@ urlpatterns = [
     url('api/query/cpu/timeseries', viewsAPI.query_cpu_timeseries, name="query_cpu_timeseries"),
     url('api/query/memory/timeseries', viewsAPI.query_memory_timeseries, name="query_memory_timeseries"),
     url('api/query/process/list', viewsAPI.query_process_list, name="query_process_list"),
+    url('api/query/disk/snapshot', viewsAPI.query_disk_snapshot, name="query_disk_snapshot"),
+
+    url('api/fake_list', viewsAPI.fake_list, name="fake_list"),
+    url('api/avatar', viewsAPI.avatar, name="avatar"),
+    url('api/data/status', viewsAPI.status_data, name="status_data"),
+    url('api/ranking/list/data', viewsAPI.ranking_list_data, name="ranking_list_data"),
+
+    url('api/query/project/info', viewsAPI.query_project_info, name="query_project_info"),
 ]

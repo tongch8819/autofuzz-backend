@@ -1,12 +1,13 @@
 import os, argparse
 import sys
+from pathlib import Path
 
-sys.path.append("../../fuzzing_platform")
-import settings
 
 def get_base_dir():
     # works just fine
-    return os.fspath(settings.BASE_DIR) + '/asset'
+    # return os.fspath(BASE_DIR) + '/asset'
+    # return "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
+    return os.fspath(Path(__file__).resolve().parent.parent.parent) + '/asset'
 
 # utility function
 def get_trgt_dir(project_id):
