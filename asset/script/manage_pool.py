@@ -1,5 +1,5 @@
 import os, argparse
-import sys
+import sys, psutil
 from pathlib import Path
 
 
@@ -78,6 +78,54 @@ def test_run():
 def test_base_dir():
     print(get_base_dir())
 
+
+# stop function
+
+def stop_process(project_id):
+    work_dir = get_base_dir() + '/pool/' + str(project_id)
+    if not os.path.isdir(work_dir):
+        print("Project does not exist.")
+        return
+    def get_pid(work_dir):
+        possible_solus = [
+            work_dir + '/output/fuzzer_stats', 
+            work_dir + '/output/default/fuzzer_stats'  # AFLPlusPlus pid at 4-th line.
+        ]
+        trgt_path = None
+        for item in possible_solus:
+            if os.path.isfile(item):
+                trgt_path = item
+        if trgt_path is not None:
+            with open(trgt_path, 'r') as rd:
+                content = rd.readlines()
+            if trgt_path == possible_solus[0]:
+                return int(content[2].strip().split()[-1])
+            else:
+                return int(content[3].strip().split()[-1])
+        else:
+            print("fuzzer_stats NOT found.")
+            return -1
+
+    pid = get_pid(work_dir)
+    try:
+        psutil.Process(pid)
+    except psutil.NoSuchProcess as e:
+        print("Process does not exist.")
+        return 
+    except ValueError as e:
+        print("fuzzer_stats NOT found.")
+        return 
+
+    cmd = "kill {}".format(pid)
+    os.system(cmd)
+    print("Kill PID {} with project id: {}".format(pid, project_id))
+
+def stop_all_process():
+    work_dir = get_base_dir() + '/pool'
+    for name in os.listdir(work_dir):
+        stop_process(int(name))
+    print("Finished.")
+
 # main
 def main():
     parser = argparse.ArgumentParser()
@@ -102,6 +150,10 @@ def main():
     run_parser.add_argument('project_id', type=int)
     run_parser.add_argument('bin_name', type=str)
     run_parser.add_argument('kernel_id', type=int)
+
+    postprocess_parser = subparsers.add_parser('stop')
+    postprocess_parser.add_argument('--all', '-a', action='store_true', help="stop all fuzzing process")
+    postprocess_parser.add_argument('--project_id', '-p', action='store', help="stop fuzzing process with pid")
 
     args = parser.parse_args()
     # print(vars(args))
@@ -142,6 +194,11 @@ def main():
         args_dict = vars(args)
         args_dict.pop('subparser_name')
         run_project(**args_dict)
+    elif args.subparser_name == 'stop':
+        if args.all:
+            stop_all_process()
+        elif args.project_id is not None:
+            stop_process(args.project_id)
     else:
         print("Nothing to be done!!!")
 

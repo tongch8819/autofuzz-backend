@@ -229,8 +229,12 @@ Report Views
 """
 def buildFuzzerStatCtx(project_id: int):
     base_path = os.fspath(settings.BASE_DIR) + "/asset"
-    # base_path = "/home/chengtong/auto-fuzz/fuzzing_platform/asset"
     work_dir = base_path + '/pool/' + str(project_id) + '/output'
+
+    # stat does not exist
+    if not os.path.isfile(work_dir + '/fuzzer_stats'):
+        return dict()
+
     with open(work_dir + '/fuzzer_stats', 'r') as rd:
         content = rd.readlines()
     context = dict()
@@ -276,7 +280,33 @@ def buildFuzzerStatCtx(project_id: int):
         context['crash_item_list'].append(tmp)
     return context
 
+from . import db_util
 def report(request, project_id):
+    # fetch template from global directory
+    sql = """select pname, size, description, upload_t from "project" where pid = {};""".format(project_id)
+    rst = db_util.select(sql)[0]
+    template = get_template('pdf/report.html')
+    # print(type(rst[-1]))
+    # print(rst[2])
+    context = {
+        'version': 'v1.0',
+        'upload_t': rst[-1].strftime('%Y-%m-%d %H:%M'),
+        # 'timestamp': time.asctime(time.localtime(time.time())),
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
+
+        'project_name': rst[0],
+        'size': rst[1],
+        'description': rst[2],
+        # 'md5': '09f1ee0e38387aa8ee813275b7f336b6',
+        # 'sha1': 'ac4aa08760f47e3c5dea91b9a4d3aecbbeed5cfd',
+        # 'sha256': 'f12a5eddc1caf40453b2b2d1d403a9a928c12fa8bd45bf26489c2cad2c172dbc',
+    }
+
+    context.update(buildFuzzerStatCtx(project_id))
+    return HttpResponse(template.render(context))
+
+
+def PDFReport(request, project_id):
     # options = {
         # 'page-size': 'Letter',
         # 'quiet': '',
@@ -292,25 +322,6 @@ def report(request, project_id):
         # 'no-outline': None,
         # 'enable-local-file-access': True,
     # }
-    # fetch template from global directory
-    template = get_template('pdf/report.html')
-    context = {
-        'version': 'v1.0',
-        'publisher_name': 'Unknown',
-        'timestamp': time.asctime(time.localtime(time.time())),
-
-        'file_name': 'project.tar.gz',
-        'size': '13K',
-        'md5': '09f1ee0e38387aa8ee813275b7f336b6',
-        'sha1': 'ac4aa08760f47e3c5dea91b9a4d3aecbbeed5cfd',
-        'sha256': 'f12a5eddc1caf40453b2b2d1d403a9a928c12fa8bd45bf26489c2cad2c172dbc',
-    }
-
-    context.update(buildFuzzerStatCtx(project_id))
-    return HttpResponse(template.render(context))
-
-
-def PDFReport(request, project_id):
     url = '127.0.0.1:8002/autofuzz/report/' + str(project_id)
     # base_path = os.fspath(settings.BASE_DIR) + "/asset"
     output_path = os.fspath(settings.BASE_DIR) + '/asset/report/tmp.pdf'
@@ -342,5 +353,14 @@ def downloadCrashSeed(request, project_id, crash_id: str):
         content = rd.readlines()
     return HttpResponse(content, content_type='text/plain')
 
+
+import random
+def randomAvatar(request, name):
+    work_dir = os.fspath(settings.BASE_DIR) + "/static/avatar"
+    total = 50
+    name = "{}.png".format(random.choice(list(range(1, total+1))))
+    with open(work_dir + '/' + name, 'br') as rd:
+        content = rd.read()
+    return HttpResponse(content, content_type='img/png')
 
 

@@ -1,6 +1,6 @@
 Command line used to find this crash:
 
-/home/chengtong/auto-fuzz/fuzzing_platform/asset/kernel/MOpt-AFL/MOpt/afl-fuzz -i /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/input -o /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/output -- /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/bin/demo &
+/home/chengtong/auto-fuzz/fuzzing_platform/asset/kernel/afl/afl-fuzz -i /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/input -o /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/output -- /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/bin/demo &
 
 If you can't reproduce a bug outside of afl-fuzz, be sure to set the same
 memory limit. The limit used for this fuzzing session was 50.0 MB.

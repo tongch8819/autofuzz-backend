@@ -1,15 +1,15 @@
-start_time        : 1610524498
-last_update       : 1610541087
-fuzzer_pid        : 15163
-cycles_done       : 7312
-execs_done        : 42783612
-execs_per_sec     : 2565.51
-paths_total       : 102
+start_time        : 1611047480
+last_update       : 1611104620
+fuzzer_pid        : 17882
+cycles_done       : 58139
+execs_done        : 176914988
+execs_per_sec     : 3084.77
+paths_total       : 104
 paths_favored     : 3
 paths_found       : 2
 paths_imported    : 0
 max_depth         : 2
-cur_path          : 101
+cur_path          : 92
 pending_favs      : 0
 pending_total     : 0
 variable_paths    : 0
@@ -17,12 +17,12 @@ stability         : 100.00%
 bitmap_cvg        : 0.01%
 unique_crashes    : 6
 unique_hangs      : 0
-last_path         : 1610524498
-last_crash        : 1610525124
+last_path         : 1611047481
+last_crash        : 1611047925
 last_hang         : 0
-execs_since_crash : 41130759
+execs_since_crash : 175400123
 exec_timeout      : 20
 afl_banner        : demo
 afl_version       : 2.52b
 target_mode       : default
-command_line      : /home/chengtong/auto-fuzz/fuzzing_platform/asset/kernel/MOpt-AFL/MOpt/afl-fuzz -i /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/input -o /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/output -- /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/bin/demo &
+command_line      : /home/chengtong/auto-fuzz/fuzzing_platform/asset/kernel/afl/afl-fuzz -i /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/input -o /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/output -- /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/1/bin/demo &

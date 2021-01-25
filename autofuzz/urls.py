@@ -31,6 +31,8 @@ urlpatterns = [
     path('report/<int:project_id>', views.report, name='report'),
     path('PDFReport/<int:project_id>', views.PDFReport, name='PDFReport'),
 
+    path('randomAvatar/<str:name>.png', views.randomAvatar, name='randomAvatar'),
+
     url('hello', views.sayHello, name="sayHello"),
 
     # download crash input seed

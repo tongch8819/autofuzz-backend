@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif, 'Noto Serif SC', serif;
+    /* font-family: 'Noto Serif SC', serif; */
 }
 
 #icon{
@@ -48,7 +49,7 @@ table.no_border, th.no_border, td.no_border {
   border-collapse: collapse;
 }
 
-table { page-break-inside:auto }
+table { page-break-inside:auto; width:100%; }
 thead { display: table-header-group }
 tfoot { display: table-row-group }
 tr { page-break-inside: avoid }
@@ -115,9 +116,13 @@ html body h3 {
   margin:0;
   padding:0; }
 html body h4 {
-  font-size: 13pt; }
+  font-size: large; }
 h5 {
   font-family: 'Oswald', sans-serif;
   font-size: 11pt; 
   display: inline;
+}
+
+.ul_item {
+  font-size: large;
 }

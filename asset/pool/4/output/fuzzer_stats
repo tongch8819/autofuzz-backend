@@ -1,0 +1,25 @@
+start_time     : 1611049446
+last_update    : 1611104800
+fuzzer_pid     : 10977
+cycles_done    : 1152
+execs_done     : 52948608
+execs_per_sec  : 860.89
+paths_total    : 104
+paths_favored  : 3
+paths_found    : 2
+paths_imported : 0
+max_depth      : 2
+cur_path       : 102
+pending_favs   : 0
+pending_total  : 0
+variable_paths : 0
+bitmap_cvg     : 0.00%
+unique_crashes : 6
+unique_hangs   : 0
+last_path      : 1611049448
+last_crash     : 1611050049
+last_hang      : 0
+exec_timeout   : 20
+afl_banner     : demo
+afl_version    : 2.06b
+command_line   : /home/chengtong/auto-fuzz/fuzzing_platform/asset/kernel/TriforceAFL/afl-fuzz -i /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/4/input -o /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/4/output -- /home/chengtong/auto-fuzz/fuzzing_platform/asset/pool/4/bin/demo &
